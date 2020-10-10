@@ -6,26 +6,24 @@ class ToDoPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toDos:
-      [
+      toDos: [
         {
           newToDo: "",
           id: "",
           isFavorite: false,
           isDone: false,
           isEditable: false,
-        }
+        },
       ],
-      done:
-      [
+      done: [
         {
           newToDo: "",
           id: "",
           isFavorite: false,
           isDone: true,
-        }
+        },
       ],
-    }
+    };
   }
 
   handleDelete(itemId) {
@@ -34,113 +32,121 @@ class ToDoPage extends Component {
   }
 
   handleEditClick(item, e) {
-    e.preventDefault()
-    item.isEditable = !item.isEditable
+    e.preventDefault();
+    item.isEditable = !item.isEditable;
   }
 
-  handleUpdate(item, e){
-    e.preventDefault()
-    if (item.isEditable){
+  handleUpdate(item, e) {
+    e.preventDefault();
+    if (item.isEditable) {
       let newToDosEdit = this.state.toDos.map((task) => {
         if (task.id === item.id) {
           task.newToDo = e.target.value;
-        }})
-        this.setState((state) => {
-          return ({ toDoList : newToDosEdit })
-        })
-        if (e.charcode === 13) {
-          return 
+        }
+      });
+      this.setState((state) => {
+        return { toDoList: newToDosEdit };
+      });
+      if (e.charcode === 13) {
+        return;
+      }
     }
   }
-}
 
-  handleEnter(toDo, e){
+  handleEnter(toDo, e) {
     if (e.keyCode === 13) {
-      console.log(toDo)
-    }  
+      console.log(toDo);
+    }
   }
 
   handleMove(toDoItem) {
-    this.handleDelete(toDoItem)
-    toDoItem.isDone = !toDoItem.isDone
+    this.handleDelete(toDoItem);
+    toDoItem.isDone = !toDoItem.isDone;
     const newDone = [toDoItem, ...this.state.done];
     this.setState(() => {
       return { done: newDone };
     });
   }
 
-  handleMoveBack(doneItem){
+  handleMoveBack(doneItem) {
     const newDones = this.state.done.filter((a) => a != doneItem);
     this.setState({ done: newDones });
-    doneItem.isDone = !doneItem.isDone
+    doneItem.isDone = !doneItem.isDone;
     const newToDos = [doneItem, ...this.state.toDos];
     this.setState(() => {
-      return { toDos : newToDos }
-    })
+      return { toDos: newToDos };
+    });
   }
 
   handleOnFavorite(item) {
-    let newToDosRemove = this.state.toDos.filter((a) => a != item)
+    let newToDosRemove = this.state.toDos.filter((a) => a != item);
     item.isFavorite = !item.isFavorite;
-    {item.isFavorite ? newToDosRemove.unshift(item) : newToDosRemove.push(item)}
-    let favoriteList = []
-    let notFavoriteList = []
-    newToDosRemove.forEach(item => {
+    {
+      item.isFavorite
+        ? newToDosRemove.unshift(item)
+        : newToDosRemove.push(item);
+    }
+    let favoriteList = [];
+    let notFavoriteList = [];
+    newToDosRemove.forEach((item) => {
       if (item.favorite === true) {
-        favoriteList.push(item)
+        favoriteList.push(item);
       } else {
-        notFavoriteList.push(item)
+        notFavoriteList.push(item);
       }
-    })
+    });
     favoriteList.sort((x, y) => {
-      return x.id - y.id
-    })
-    const orderedList = [...favoriteList, ...notFavoriteList]
-    this.setState({ toDos: orderedList})
+      return x.id - y.id;
+    });
+    const orderedList = [...favoriteList, ...notFavoriteList];
+    this.setState({ toDos: orderedList });
   }
 
-  handleOnDoneFavorite(item){
-    let newDoneRemove = this.state.done.filter((a) => a !=item)
+  handleOnDoneFavorite(item) {
+    let newDoneRemove = this.state.done.filter((a) => a != item);
     item.isFavorite = !item.isFavorite;
-    {item.isFavorite ? newDoneRemove.unshift(item) : newDoneRemove.push(item)}
-    let favoriteList = []
-    let notFavoriteList = []
-    newDoneRemove.forEach(item => {
+    {
+      item.isFavorite ? newDoneRemove.unshift(item) : newDoneRemove.push(item);
+    }
+    let favoriteList = [];
+    let notFavoriteList = [];
+    newDoneRemove.forEach((item) => {
       if (item.favorite) {
-        favoriteList.push(item)
+        favoriteList.push(item);
       } else {
-        notFavoriteList.push(item)
+        notFavoriteList.push(item);
       }
-    })
+    });
     favoriteList.sort((x, y) => {
-      return x.id - y.id
-    })
-    const orderedList = [...favoriteList, ...notFavoriteList]
-    this.setState({ done: orderedList})
+      return x.id - y.id;
+    });
+    const orderedList = [...favoriteList, ...notFavoriteList];
+    this.setState({ done: orderedList });
   }
 
   handleOnNewItem(newToDo) {
     this.setState((state) => {
-        return {
+      return {
         toDos: [newToDo, ...state.toDos],
-      }
+      };
     });
   }
 
-  handleOnReset(){
+  handleOnReset() {
     this.setState({
       toDos: [],
-      done: []
-    })
+      done: [],
+    });
   }
 
   render() {
     return (
       <div>
-        <ToDoForm onNewItem={(newToDo) => this.handleOnNewItem(newToDo)}
-        toDos = {this.state.toDos}
-        done = {this.state.done}
-        onReset={() => this.handleOnReset()}
+        <ToDoForm
+          onNewItem={(newToDo) => this.handleOnNewItem(newToDo)}
+          toDos={this.state.toDos}
+          done={this.state.done}
+          onReset={() => this.handleOnReset()}
         />
         <ToDoList
           toDos={this.state.toDos}
